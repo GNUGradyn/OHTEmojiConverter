@@ -31,31 +31,31 @@ foreach (var category in result)
         category.Icons.Add(new OhtIcon()
         {
             Names = names.ToArray(),
-            Url = $"https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/{ConvertEmojiToCodepoint(emoji.emoji)}.svg".ToLower()
+            Url = GetTwemojiUrl(emoji.emoji)
         });
     }
 }
 Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
 
-static string ConvertEmojiToCodepoint(string input)
+static string GetTwemojiUrl(string emoji)
 {
-    StringBuilder output = new StringBuilder();
-
-    for (int i = 0; i < input.Length; i++)
+    StringBuilder unicodeBuilder = new StringBuilder();
+        
+    for (int i = 0; i < emoji.Length; i++)
     {
-        char c = input[i];
+        int codepoint = char.ConvertToUtf32(emoji, i);
+        if (char.IsSurrogate(emoji[i]))
+        {
+            i++; // Skip the second part of the surrogate pair
+        }
 
-        if (char.IsHighSurrogate(c) && i < input.Length - 1 && char.IsLowSurrogate(input[i + 1]))
+        if (unicodeBuilder.Length > 0)
         {
-            int codepoint = char.ConvertToUtf32(c, input[i + 1]);
-            output.Append($"{codepoint:X4}{(i == input.Length - 2 ? "" : "-")}");
-            i++; // Skip the low surrogate
+            unicodeBuilder.Append("-");
         }
-        else if (!char.IsLowSurrogate(c))
-        {
-            output.Append(c);
-        }
+            
+        unicodeBuilder.AppendFormat("{0:x4}", codepoint);
     }
 
-    return output.ToString().ToUpper();
+    return $"https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/{unicodeBuilder}.svg";
 }
