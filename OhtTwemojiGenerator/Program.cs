@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using OhtTwemojiGenerator;
@@ -35,6 +36,19 @@ foreach (var category in result)
         });
     }
 }
+
+// Discard borked ones
+result.SelectMany(x => x.Icons).Select(x => x).ToList().ForEach(x =>
+{
+    var testClient = new RestClient(x.Url);
+    var test = client.Get(new RestRequest());
+
+    if (test.StatusCode != HttpStatusCode.OK)
+    {
+        result.Single(y => y.Icons.Contains(x)).Icons.Remove(x);
+    }
+});
+
 Console.WriteLine(JsonSerializer.Serialize(result));
 
 static string GetTwemojiUrl(string emoji)
