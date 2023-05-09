@@ -9,5 +9,5 @@ public class OhtIcon
 public class OhtIconCategeroy
 {
     public string Name { get; set; }
-    public List<OhtIcon> Icons = new();
+    public List<OhtIcon> Icons { get; set; } = new();
 }

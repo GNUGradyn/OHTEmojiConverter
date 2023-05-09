@@ -35,7 +35,7 @@ foreach (var category in result)
         });
     }
 }
-Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result));
+Console.WriteLine(JsonSerializer.Serialize(result));
 
 static string GetTwemojiUrl(string emoji)
 {
