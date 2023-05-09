@@ -57,5 +57,5 @@ static string GetTwemojiUrl(string emoji)
         unicodeBuilder.AppendFormat("{0:x4}", codepoint);
     }
 
-    return $"https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/{unicodeBuilder}.svg";
+    return $"https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/{unicodeBuilder}.svg".Replace("-fe0f", "");
 }
