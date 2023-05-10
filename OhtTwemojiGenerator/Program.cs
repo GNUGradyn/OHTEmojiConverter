@@ -37,15 +37,15 @@ foreach (var category in result)
     }
 }
 
-// Discard borked ones
-result.SelectMany(x => x.Icons).Select(x => x).ToList().ForEach(x =>
+result.SelectMany(x => x.Icons).Where(x => x.Url.Contains("-fe0f")).ToList().ForEach(x =>
 {
     var testClient = new RestClient(x.Url);
-    var test = client.Get(new RestRequest());
+    var test = testClient.Get(new RestRequest());
 
     if (test.StatusCode != HttpStatusCode.OK)
     {
-        result.Single(y => y.Icons.Contains(x)).Icons.Remove(x);
+        x.Url = x.Url.Replace("-fe0f", "");
+        Console.WriteLine("Fixed " + x.Url);
     }
 });
 
@@ -71,5 +71,5 @@ static string GetTwemojiUrl(string emoji)
         unicodeBuilder.AppendFormat("{0:x4}", codepoint);
     }
 
-    return $"https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/{unicodeBuilder}.svg".Replace("-fe0f", "");
+    return $"https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/{unicodeBuilder}.svg";
 }
