@@ -37,6 +37,7 @@ foreach (var category in result)
     }
 }
 
+// Fix URLs that may have trailing -fe0f
 result.SelectMany(x => x.Icons).Where(x => x.Url.Contains("-fe0f")).ToList().ForEach(x =>
 {
     var testClient = new RestClient(x.Url);
@@ -45,6 +46,18 @@ result.SelectMany(x => x.Icons).Where(x => x.Url.Contains("-fe0f")).ToList().For
     if (test.StatusCode != HttpStatusCode.OK)
     {
         x.Url = x.Url.Replace("-fe0f", "");
+    }
+});
+
+// Delete emojis twitter cannot provide
+result.SelectMany(x => x.Icons).ToList().ForEach(x =>
+{
+    var testClient = new RestClient(x.Url);
+    var test = testClient.Get(new RestRequest());
+
+    if (test.StatusCode != HttpStatusCode.OK)
+    {
+        result.Single(y => y.Icons.Contains(x)).Icons.Remove(x);
     }
 });
 
