@@ -45,7 +45,6 @@ result.SelectMany(x => x.Icons).Where(x => x.Url.Contains("-fe0f")).ToList().For
     if (test.StatusCode != HttpStatusCode.OK)
     {
         x.Url = x.Url.Replace("-fe0f", "");
-        Console.WriteLine("Fixed " + x.Url);
     }
 });
 
